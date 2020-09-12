@@ -24,6 +24,7 @@ source_group("OptickCore" FILES ${OPTICK_SRC})
 
 # Enabled
 option(OPTICK_ENABLED "Enable profiling with Optick" ON)
+option(OPTICK_STATIC "Compile OptickCore as a static library" OFF)
 option(OPTICK_INSTALL_TARGETS "Should optick be installed? Set to OFF if you use add_subdirectory to include Optick." ON)
 
 if(NOT OPTICK_ENABLED)
@@ -42,14 +43,20 @@ option(OPTICK_USE_D3D12 "Built-in support for DirectX 12" OFF)
 option(OPTICK_BUILD_GUI_APP "Build Optick gui viewer app" OFF)
 option(OPTICK_BUILD_CONSOLE_SAMPLE "Build Optick console sample app" ${standalone})
 
+if (OPTICK_STATIC)
+	set(OPTICK_LIBRARY_TYPE "STATIC")
+elseif()
+	set(OPTICK_LIBRARY_TYPE "SHARED")
+endif()
+
 # OptickCore
-add_library(OptickCore SHARED ${OPTICK_SRC})
+add_library(OptickCore ${OPTICK_LIBRARY_TYPE} ${OPTICK_SRC})
 target_include_directories(OptickCore
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
-set_target_properties(OptickCore 
-	PROPERTIES 
+set_target_properties(OptickCore
+	PROPERTIES
 		PUBLIC_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/src/optick.h;${CMAKE_CURRENT_SOURCE_DIR}/src/optick.config.h"
 		DEBUG_POSTFIX d # So that we can install debug and release side by side
 )
@@ -124,10 +131,10 @@ if(OPTICK_INSTALL_TARGETS)
 	configure_package_config_file(
 		${PROJECT_SOURCE_DIR}/tools/${PROJECT_NAME}Config.cmake.in
 		${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-		INSTALL_DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR} 
+		INSTALL_DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
 		# Imported targets do not require the following macros
 		NO_SET_AND_CHECK_MACRO
-		NO_CHECK_REQUIRED_COMPONENTS_MACRO 
+		NO_CHECK_REQUIRED_COMPONENTS_MACRO
 	)
 
 	install(TARGETS OptickCore
@@ -136,18 +143,19 @@ if(OPTICK_INSTALL_TARGETS)
 		LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 
 	)
 
 	install(
-		EXPORT ${PROJECT_NAME}_Targets 
+		EXPORT ${PROJECT_NAME}_Targets
 		NAMESPACE ${PROJECT_NAME}::
 		FILE ${PROJECT_NAME}Targets.cmake
 		DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
 	)
 
 
-	install(FILES 
+	install(FILES
 		${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
 		DESTINATION
