@@ -240,7 +240,7 @@ namespace Optick
 
 	void GPUProfilerVulkan::WaitForFrame(uint64_t frameNumberToWait)
 	{
-		OPTICK_EVENT();
+		OPTICK_EVENT("GPUProfilerVulkan::WaitForFrame");
 
 		int r = VK_SUCCESS;
 		do
