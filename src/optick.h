@@ -112,6 +112,7 @@ struct VkSubmitInfo;
 struct VkCommandBufferBeginInfo;
 
 #ifndef VKAPI_PTR
+#define NO_VKAPI
 #if defined(_WIN32)
     // On Windows, Vulkan commands use the stdcall convention
 	#define VKAPI_PTR  __stdcall
@@ -138,6 +139,11 @@ typedef void (VKAPI_PTR *PFN_vkDestroyCommandPool_)(VkDevice device, VkCommandPo
 typedef void (VKAPI_PTR *PFN_vkDestroyQueryPool_)(VkDevice device, VkQueryPool queryPool, const VkAllocationCallbacks* pAllocator);
 typedef void (VKAPI_PTR *PFN_vkDestroyFence_)(VkDevice device, VkFence fence, const VkAllocationCallbacks* pAllocator);
 typedef void (VKAPI_PTR *PFN_vkFreeCommandBuffers_)(VkDevice device, VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers);
+
+#ifdef NO_VKAPI
+#undef NO_VKAPI
+#undef VKAPI_PTR
+#endif
 
 // D3D12 Forward Declarations
 struct ID3D12CommandList;
