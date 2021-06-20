@@ -1635,6 +1635,12 @@ void Core::Shutdown()
 	fibers.clear();
 
 	EventDescriptionBoard::Get().Shutdown();
+	
+	if (gpuProfiler)
+	{
+		Memory::Delete(gpuProfiler);
+		gpuProfiler = nullptr;
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Core::~Core()
