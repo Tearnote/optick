@@ -24,7 +24,11 @@
 
 #if USE_OPTICK
 #if OPTICK_ENABLE_GPU_VULKAN
+#ifndef OPTICK_CUSTOM_VULKAN_HEADER
 #include <vulkan/vulkan.h>
+#else
+#include OPTICK_CUSTOM_VULKAN_HEADER
+#endif
 
 #include "optick_core.h"
 #include "optick_gpu.h"
